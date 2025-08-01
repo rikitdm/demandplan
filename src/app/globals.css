@@ -29,6 +29,16 @@
     --chart-3: 27 87% 67%;
     --chart-4: 173 58% 39%;
     --chart-5: 43 74% 66%;
+    /* Status colors for inventory management */
+    --status-success: 142 76% 36%;
+    --status-success-foreground: 355 7% 97%;
+    --status-success-muted: 142 76% 96%;
+    --status-warning: 38 92% 50%;
+    --status-warning-foreground: 48 96% 89%;
+    --status-warning-muted: 48 96% 96%;
+    --status-critical: 0 84% 60%;
+    --status-critical-foreground: 0 0% 98%;
+    --status-critical-muted: 0 84% 96%;
   }
 
   .dark {
@@ -56,6 +66,16 @@
     --chart-3: 27 87% 67%;
     --chart-4: 173 58% 39%;
     --chart-5: 43 74% 66%;
+    /* Status colors for inventory management - dark mode */
+    --status-success: 142 76% 36%;
+    --status-success-foreground: 355 7% 97%;
+    --status-success-muted: 142 76% 20%;
+    --status-warning: 38 92% 50%;
+    --status-warning-foreground: 48 96% 89%;
+    --status-warning-muted: 38 92% 20%;
+    --status-critical: 0 84% 60%;
+    --status-critical-foreground: 0 0% 98%;
+    --status-critical-muted: 0 84% 20%;
   }
 }
 

@@ -2,6 +2,7 @@ import { AiAlerts } from "@/components/dashboard/ai-alerts";
 import { DemandDriversChart } from "@/components/dashboard/demand-drivers-chart";
 import { DemandForecastChart } from "@/components/dashboard/demand-forecast-chart";
 import { ForecastAccuracyChart } from "@/components/dashboard/forecast-accuracy-chart";
+import { Forecasting } from "@/components/dashboard/forecasting";
 import { Header } from "@/components/dashboard/header";
 import { InventoryTable } from "@/components/dashboard/inventory-table";
 import { KpiCards } from "@/components/dashboard/kpi-cards";
@@ -20,6 +21,7 @@ export default function Home() {
           <InventoryTable className="lg:col-span-4" />
           <ForecastAccuracyChart className="lg:col-span-3" />
         </div>
+        <Forecasting />
         <AiAlerts />
       </main>
     </div>

@@ -22,9 +22,16 @@ export function Header() {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full"
+              aria-label="User account menu"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
               <Avatar>
-                <AvatarImage src="https://placehold.co/40x40" alt="User" data-ai-hint="person" />
+                <AvatarImage src="https://placehold.co/40x40" alt="User avatar" />
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
             </Button>

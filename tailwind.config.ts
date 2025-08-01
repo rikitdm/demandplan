@@ -65,6 +65,24 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        // Status colors for inventory management
+        status: {
+          success: {
+            DEFAULT: 'hsl(var(--status-success))',
+            foreground: 'hsl(var(--status-success-foreground))',
+            muted: 'hsl(var(--status-success-muted))',
+          },
+          warning: {
+            DEFAULT: 'hsl(var(--status-warning))',
+            foreground: 'hsl(var(--status-warning-foreground))',
+            muted: 'hsl(var(--status-warning-muted))',
+          },
+          critical: {
+            DEFAULT: 'hsl(var(--status-critical))',
+            foreground: 'hsl(var(--status-critical-foreground))',
+            muted: 'hsl(var(--status-critical-muted))',
+          },
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

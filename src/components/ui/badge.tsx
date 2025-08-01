@@ -15,6 +15,13 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
+        // Status-specific variants using CSS variables
+        success:
+          "border-transparent bg-status-success text-status-success-foreground hover:bg-status-success/80",
+        warning:
+          "border-transparent bg-status-warning text-status-warning-foreground hover:bg-status-warning/80",
+        critical:
+          "border-transparent bg-status-critical text-status-critical-foreground hover:bg-status-critical/80",
       },
     },
     defaultVariants: {

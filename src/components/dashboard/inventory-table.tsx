@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -14,9 +17,20 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const inventoryData = [
+interface InventoryItem {
+  id: string;
+  name: string;
+  status: "In Stock" | "Low Stock" | "Out of Stock";
+  level: number;
+  reorderPoint: number;
+  leadTime: string;
+}
+
+const inventoryData: InventoryItem[] = [
   {
     id: "SKU-001",
     name: "Quantum Stabilizer",
@@ -59,32 +73,162 @@ const inventoryData = [
   },
 ]
 
+type SortField = keyof InventoryItem;
+type SortDirection = "asc" | "desc";
+
+interface SortConfig {
+  field: SortField;
+  direction: SortDirection;
+}
+
 type InventoryTableProps = {
     className?: string;
 };
 
+function SortableHeader({ 
+  field, 
+  currentSort, 
+  onSort, 
+  children 
+}: { 
+  field: SortField; 
+  currentSort: SortConfig | null; 
+  onSort: (field: SortField) => void; 
+  children: React.ReactNode;
+}) {
+  const isActive = currentSort?.field === field;
+  
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => onSort(field)}
+      className="h-auto p-0 font-medium hover:bg-transparent"
+    >
+      {children}
+      <div className="ml-2 flex items-center">
+        {isActive ? (
+          currentSort.direction === "asc" ? (
+            <ArrowUp className="h-4 w-4" />
+          ) : (
+            <ArrowDown className="h-4 w-4" />
+          )
+        ) : (
+          <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+        )}
+      </div>
+    </Button>
+  );
+}
+
 export function InventoryTable({ className }: InventoryTableProps) {
+  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
+
+  const handleSort = (field: SortField) => {
+    setSortConfig((current) => {
+      if (current?.field === field) {
+        // If clicking the same field, toggle direction
+        return {
+          field,
+          direction: current.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      // If clicking a new field, set it as ascending
+      return { field, direction: "asc" };
+    });
+  };
+
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return inventoryData;
+
+    return [...inventoryData].sort((a, b) => {
+      const aValue = a[sortConfig.field];
+      const bValue = b[sortConfig.field];
+
+      // Handle different data types
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        const comparison = aValue.localeCompare(bValue);
+        return sortConfig.direction === "asc" ? comparison : -comparison;
+      }
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        const comparison = aValue - bValue;
+        return sortConfig.direction === "asc" ? comparison : -comparison;
+      }
+
+      // For status, create a priority order
+      if (sortConfig.field === "status") {
+        const statusPriority = { "In Stock": 1, "Low Stock": 2, "Out of Stock": 3 };
+        const aPriority = statusPriority[a.status as keyof typeof statusPriority];
+        const bPriority = statusPriority[b.status as keyof typeof statusPriority];
+        const comparison = aPriority - bPriority;
+        return sortConfig.direction === "asc" ? comparison : -comparison;
+      }
+
+      return 0;
+    });
+  }, [sortConfig]);
+
   return (
     <Card className={cn(className)}>
       <CardHeader>
         <CardTitle className="font-headline">Inventory Management</CardTitle>
         <CardDescription>
-          Product-level inventory status, reorder points, and lead times.
+          Product-level inventory status, reorder points, and lead times. Click column headers to sort.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Current Level</TableHead>
-              <TableHead className="text-right">Reorder Point</TableHead>
-              <TableHead>Lead Time</TableHead>
+              <TableHead>
+                <SortableHeader
+                  field="name"
+                  currentSort={sortConfig}
+                  onSort={handleSort}
+                >
+                  Product
+                </SortableHeader>
+              </TableHead>
+              <TableHead>
+                <SortableHeader
+                  field="status"
+                  currentSort={sortConfig}
+                  onSort={handleSort}
+                >
+                  Status
+                </SortableHeader>
+              </TableHead>
+              <TableHead className="text-right">
+                <SortableHeader
+                  field="level"
+                  currentSort={sortConfig}
+                  onSort={handleSort}
+                >
+                  Current Level
+                </SortableHeader>
+              </TableHead>
+              <TableHead className="text-right">
+                <SortableHeader
+                  field="reorderPoint"
+                  currentSort={sortConfig}
+                  onSort={handleSort}
+                >
+                  Reorder Point
+                </SortableHeader>
+              </TableHead>
+              <TableHead>
+                <SortableHeader
+                  field="leadTime"
+                  currentSort={sortConfig}
+                  onSort={handleSort}
+                >
+                  Lead Time
+                </SortableHeader>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {inventoryData.map((item) => (
+            {sortedData.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
                     <div className="font-medium">{item.name}</div>
@@ -94,15 +238,11 @@ export function InventoryTable({ className }: InventoryTableProps) {
                   <Badge
                     variant={
                       item.status === "In Stock"
-                        ? "secondary"
+                        ? "success"
                         : item.status === "Low Stock"
-                        ? "default"
-                        : "destructive"
+                        ? "warning"
+                        : "critical"
                     }
-                     className={cn({
-                        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200": item.status === "In Stock",
-                        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200": item.status === "Low Stock",
-                     })}
                   >
                     {item.status}
                   </Badge>
